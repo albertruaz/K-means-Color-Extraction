@@ -37,7 +37,7 @@ def find_optimal_k(pixels_lab, max_k=5):
         k_start_time = time.time()
         print(f"k={k} 테스트 중...")
         try:
-            kmeans = KMeans(n_clusters=k, random_state=42, n_init=5)
+            kmeans = KMeans(n_clusters=k, init='k-means++', random_state=42, n_init=5)
             labels = kmeans.fit_predict(pixels_sample)
             
             # Calculate silhouette score with error handling
