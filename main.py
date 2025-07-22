@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 from color_extractor_kmeans import extract_dominant_colors_kmeans
-from color_classification import extract_dominant_colors_classification
+from color_classification import extract_dominant_colors_classification, extract_dominant_colors_classification_XKCD
 
 def process_all_images(folder_path='images'):
     """
@@ -45,7 +45,7 @@ def process_all_images(folder_path='images'):
             print(f"\n=== {os.path.basename(img_path)} 처리 중 ({i}/{len(image_files)}) ===")
             img_start_time = time.time()
             
-            colors, percentages, coverage, optimal_k = extract_dominant_colors_classification(img_path)
+            colors, percentages, coverage, optimal_k = extract_dominant_colors_classification_XKCD(img_path)
             results.append((img_path, colors, percentages, coverage, optimal_k))
             
             img_processing_time = time.time() - img_start_time
