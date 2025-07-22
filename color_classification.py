@@ -34,9 +34,32 @@ def load_color_dictionary(json_path='color_list.json'):
         print(f"색상 딕셔너리 로드 실패: {e}")
         return {}
 
+def find_closest_color_batch(pixels_rgb, color_dict):
+    """
+    Find the closest colors for a batch of pixels using vectorized operations.
+    
+    Args:
+        pixels_rgb (np.array): Array of RGB pixel values (N, 3)
+        color_dict (dict): Dictionary of color names to RGB values
+    
+    Returns:
+        list: List of closest color names for each pixel
+    """
+    color_names = list(color_dict.keys())
+    color_values = np.array(list(color_dict.values()))  # shape (C, 3)
+    
+    # Vectorized distance calculation using broadcasting
+    # pixels_rgb (N,3), color_values (C,3) → (N,C,3)
+    diff = pixels_rgb[:, None, :] - color_values[None, :, :]
+    dists = np.linalg.norm(diff, axis=2)  # shape (N, C)
+    closest_indices = np.argmin(dists, axis=1)
+    
+    return [color_names[idx] for idx in closest_indices]
+
 def find_closest_color(pixel_rgb, color_dict):
     """
     Find the closest color from the dictionary for a given pixel.
+    (Kept for compatibility, but use find_closest_color_batch for better performance)
     
     Args:
         pixel_rgb (tuple): RGB values of the pixel
@@ -132,9 +155,9 @@ def extract_dominant_colors_classification(image_path, max_colors=4, coverage_th
     batch_size = 10000
     for i in range(0, total_pixels, batch_size):
         batch = pixels_rgb[i:i+batch_size]
-        for pixel in batch:
-            closest_color = find_closest_color(tuple(pixel), color_dict)
-            color_counts[closest_color] += 1
+        closest_colors_batch = find_closest_color_batch(batch, color_dict)
+        for color_name in closest_colors_batch:
+            color_counts[color_name] += 1
     
     classification_time = time.time() - classification_start_time
     print(f"색상 분류 시간: {classification_time:.2f}초")
