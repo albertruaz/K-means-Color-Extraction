@@ -1,6 +1,8 @@
 __pycache__/
-/images/
-/results/
+# /images/
+# /results/
+/results_CSS4/
+/results_XKCD/
+/results_list_based/
 .DS_Store
 *.txt
-*.png

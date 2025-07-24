@@ -5,7 +5,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from collections import Counter
 
-def find_optimal_k(pixels_lab, max_k=5):
+def find_optimal_k(pixels_lab, max_k):
     """
     Find optimal k using silhouette score and elbow method.
     
@@ -94,14 +94,13 @@ def find_optimal_k(pixels_lab, max_k=5):
     
     return optimal_k
 
-def extract_dominant_colors_kmeans(image_path, max_colors=4, coverage_threshold=0.8):
+def extract_dominant_colors_kmeans(image_path, max_colors=5):
     """
     Extract dominant colors from an image using K-means clustering in CIELAB space.
     
     Args:
         image_path (str): Path to the input image file.
         max_colors (int): Maximum number of colors to extract (default: 4).
-        coverage_threshold (float): Threshold for cumulative coverage (default: 0.8).
     
     Returns:
         List of RGB tuples representing dominant colors.
@@ -181,9 +180,9 @@ def extract_dominant_colors_kmeans(image_path, max_colors=4, coverage_threshold=
     cumulative_coverage = 0.0
     
     # 모든 클러스터의 색상을 선택 (80% 기준 비활성화)
-    # 5% 이상인 색상만 포함
-    for cluster_label, percentage in sorted_clusters:
-        if percentage >= 0.03:  # 5% 이상인 경우만 포함
+    # 상위 3개 색상만 선택
+    for i, (cluster_label, percentage) in enumerate(sorted_clusters):
+        if i < 4:  # 상위 3개만 선택
             selected_colors.append(cluster_centers_rgb[cluster_label])
             cumulative_coverage += percentage
     
