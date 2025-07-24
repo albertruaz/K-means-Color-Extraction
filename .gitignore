@@ -5,4 +5,5 @@ __pycache__/
 /results_XKCD/
 /results_list_based/
 .DS_Store
-*.txt
+# *.txt
+*.png
